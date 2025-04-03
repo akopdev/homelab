@@ -5,6 +5,8 @@ repositories:
   url: https://metallb.github.io/metallb
 - name: ingress-nginx
   url: https://kubernetes.github.io/ingress-nginx
+- name: open-webui
+  url: https://helm.openwebui.com
 
 releases:
 - name: metallb
@@ -78,3 +80,14 @@ releases:
           indexer:
             ISSUE_INDEXER_TYPE: bleve
             REPO_INDEXER_ENABLED: true
+
+- name: open-webui
+  namespace: open-webui
+  chart: open-webui/open-webui
+  values:
+    - clusterDomain: chatgpt.homelab.local
+    - ingress:
+        enabled: true
+        host: chatgpt.homelab.local
+        annotations:
+          nginx.ingress.kubernetes.io/rewrite-target: /
