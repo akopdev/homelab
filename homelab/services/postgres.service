@@ -4,9 +4,8 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/etc/homelab/postgres/podman-run.sh
-ExecStop=/usr/bin/podman stop postgres
-ExecStopPost=/usr/bin/podman rm -f postgres
+ExecStart=/etc/homelab/homelab-ctl run postgres
+ExecStop=/etc/homelab/homelab-ctl stop postgres
 Restart=always
 
 [Install]

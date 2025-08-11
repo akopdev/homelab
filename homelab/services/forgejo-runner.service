@@ -1,0 +1,13 @@
+[Unit]
+Description=Forgejo Actions Runner
+Requires=forgejo.service
+After=network.target forgejo.service
+
+[Service]
+Type=simple
+ExecStart=/etc/homelab/homelab-ctl run forgejo-runner
+ExecStop=/etc/homelab/homelab-ctl stop forgejo-runner
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
