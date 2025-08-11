@@ -1,12 +1,26 @@
-# Homelab
+Homelab notes
+=============
+## Start virtual machine
 
-Collection of scripts and configurations I use to manage my Raspberry Pi based Homelab.
-
-## Install dependencies
-
-```bash
-brew install helmfile
-
-# Install required dependencies
-helmfile init
 ```
+make start
+```
+
+## Mounting host folder
+
+```sh
+# Inside MicroOS (as root):
+mkdir -p /etc/homelab
+mount -t 9p -o trans=virtio hostshare /etc/homelab
+```
+
+to make it persistent add to `/etc/fstab`
+
+```txt
+hostshare   /etc/homelab   9p   trans=virtio,version=9p2000.L   0   0
+```
+
+## Troubleshooting
+
+If your services are failing because of permission denied err, try to disable SELinux 
+by run `setenforce 0`.
