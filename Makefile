@@ -15,5 +15,5 @@ start: ## Launch virtual machine with Qemu
 		-drive if=virtio,file=openSUSE-MicroOS.aarch64-ContainerHost-kvm-and-xen.qcow2,format=qcow2 \
 		-netdev user,id=net0,hostfwd=tcp::2222-:22,hostfwd=tcp::3000-:3000 \
 		-device virtio-net-pci,netdev=net0 \
-		-fsdev local,id=fsdev0,path=homelab,security_model=none \
+		-fsdev local,id=fsdev0,path=.,security_model=none \
 		-device virtio-9p-pci,fsdev=fsdev0,mount_tag=hostshare
