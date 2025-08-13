@@ -1,0 +1,13 @@
+[Container]
+Image=docker.io/library/postgres:15-alpine
+AutoUpdate=registry
+UserNS=keep-id
+Network=homelab.network
+ContainerName=postgres
+Volume=postgres-data:/var/lib/postgresql/data
+Environment=POSTGRES_DB=forgejo
+Environment=POSTGRES_USER=forgejo
+Environment=POSTGRES_PASSWORD=changeme
+
+[Install]
+WantedBy=default.target
