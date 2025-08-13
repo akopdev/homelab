@@ -44,7 +44,7 @@ copy_service_files() {
 
 create_custom_network() {
     local src_dir="networks"
-    local dst_dir="/etc/containers/network"
+    local dst_dir="/etc/containers/systemd"
 
     if [[ ! -d "$src_dir" ]]; then
         echo "[ERROR] Source directory '$src_dir' not found." >&2
