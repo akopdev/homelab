@@ -7,9 +7,11 @@ Image=docker.io/gitea/act_runner:latest
 AutoUpdate=registry
 UserNS=keep-id
 Network=homelab.network
+ContainerName=forgejo-runner
 Volume=runner-data:/data
 Environment=GITEA_INSTANCE_URL=http://forgejo:3000/
-Environment=GITEA_RUNNER_REGISTRATION_TOKEN=your_registration_token
+Secret=FORGEJO_RUNNER_REGISTRATION_TOKEN,type=env,target=GITEA_RUNNER_REGISTRATION_TOKEN
+
 
 [Install]
 WantedBy=default.target

@@ -13,10 +13,10 @@ Volume=forgejo-config:/etc/gitea
 Environment=FORGEJO__database__DB_TYPE=postgres 
 Environment=FORGEJO__database__HOST=postgres:5432
 Environment=FORGEJO__database__NAME=forgejo 
-Environment=FORGEJO__database__USER=forgejo 
-Environment=FORGEJO__database__PASSWD=changeme 
 Environment=FORGEJO__security__INSTALL_LOCK=true 
-Environment=FORGEJO__security__SECRET_KEY=supersecretkey 
+Secret=DATABASE_USER,type=env,target=FORGEJO__database__USER
+Secret=DATABASE_PASSWORD,type=env,target=FORGEJO__database__PASSWD
+Secret=FORGEJO_SECRET_KEY,type=env,target=FORGEJO__database__SECRET_KEY
 
 [Install]
 WantedBy=default.target
