@@ -6,8 +6,8 @@ Network=homelab.network
 ContainerName=postgres
 Volume=postgres-data:/var/lib/postgresql/data
 Environment=POSTGRES_DB=forgejo
-Environment=POSTGRES_USER=forgejo
-Environment=POSTGRES_PASSWORD=changeme
+Secret=DATABASE_USER,type=env,target=POSTGRES_USER
+Secret=DATABASE_PASSWORD,type=env,target=POSTGRES_PASSWORD
 
 [Install]
 WantedBy=default.target

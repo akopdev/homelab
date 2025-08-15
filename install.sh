@@ -66,6 +66,15 @@ create_custom_network() {
 
 }
 
+init_secrets() {
+    while IFS='=' read -r key value; do
+        # Skip empty lines and comments
+        [[ -z "$key" || "$key" =~ ^# ]] && continue
+        echo -n "$value" | podman secret create --replace "$key" -
+    done < "${1}"
+}
+
 require_root
+init_secrets "secrets.env"
 create_custom_network
 copy_service_files
