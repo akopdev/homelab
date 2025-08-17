@@ -1,0 +1,19 @@
+[Unit]
+After=forgejo.container
+Requires=forgejo.container
+
+[Container]
+Image=docker.io/library/nginx:latest
+AutoUpdate=registry
+UserNS=keep-id
+Network=homelab.network
+ContainerName=nginx
+PublishPort=80:80/tcp
+Volume=/etc/homelab/configs/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+
+[Service]
+# Inform systemd of additional exit status
+SuccessExitStatus=0 143
+
+[Install]
+WantedBy=default.target

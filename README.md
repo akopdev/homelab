@@ -24,3 +24,7 @@ hostshare   /etc/homelab   9p   trans=virtio,version=9p2000.L   0   0
 
 If your services are failing because of permission denied err, try to disable SELinux 
 by run `setenforce 0`.
+
+## Path to container volumes
+
+- /var/lib/containers/storage/volumes/
