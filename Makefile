@@ -13,10 +13,11 @@ QEMU_BIOS_PATH ?= /opt/homebrew/share/qemu/edk2-aarch64-code.fd
 
 # MicroOS image file.
 IMAGE_FILE := openSUSE-MicroOS.aarch64-ContainerHost-kvm-and-xen.qcow2
+COMBUSTION_FILE := combustion.img
 
-# Path to podman-systemd files
-DST_DIR       := /etc/containers/systemd
-SERVICE_FILES := $(shell find services -type f -name "*.container")
+# Path to podman quadlet files
+DST_DIR       := $(HOME)/.config/containers/systemd
+QUADLET_DIR 	:= $(dir $(abspath $(lastword $(MAKEFILE_LIST))))/quadlet
 
 # ====================
 # Targets
@@ -25,13 +26,8 @@ SERVICE_FILES := $(shell find services -type f -name "*.container")
 $(IMAGE_FILE):
 	@if [ ! -f "$(IMAGE_FILE)" ]; then curl -L -o $@ https://download.opensuse.org/ports/aarch64/tumbleweed/appliances/$(IMAGE_FILE); fi
 
-combustion/wifi.conf:
-	@echo "--- Setting up Wi-Fi Configuration ---"
-	@read -p "Enter Wi-Fi SSID: " wifi_ssid; \
-	read -s -p "Enter Wi-Fi Password: " wifi_pass; echo; \
-	echo "WIFI_SSID='$$wifi_ssid'" > combustion/wifi.conf; \
-	echo "WIFI_PASS='$$wifi_pass'" >> combustion/wifi.conf
-	@echo "Wi-Fi configuration file created: combustion/wifi.conf"
+$(DST_DIR):
+	@mkdir -p $@
 
 combustion/user.conf: 
 	@echo "--- Setting up System user configuration ---"
@@ -42,10 +38,13 @@ combustion/user.conf:
 	echo "PASSWORD_HASH='$$user_pass_hash'" >> combustion/user.conf
 	@echo "User configuration file created: combustion/user.conf"
 
+$(COMBUSTION_FILE): combustion/user.conf
+	@dd if=/dev/zero of=$@ bs=1m count=4
+	@mkfs.vfat -n COMBUSTION $@
+	@mcopy -i $@ -s combustion ::
+
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-16s\033[0m %s\n", $$1, $$2}'
-
-setup: combustion/wifi.conf combustion/user.conf ## Enable Wifi and add system user.
 
 secrets: secrets.env
 	@while read -r line; do \
@@ -56,15 +55,11 @@ secrets: secrets.env
 		fi \
 	done < $<
 
-networks:
-	@cp -f $(wildcard networks/*.network) $(DST_DIR)
+install: secrets $(DST_DIR) ## Install all services.
+	@ln -sfn $(QUADLET_DIR) $(DST_DIR)
+	@systemctl --user daemon-reload
 
-install: secrets networks ## Install all services.
-	@cp -f $(SERVICE_FILES) $(DST_DIR);
-	@systemctl daemon-reload;
-	@$(foreach file, $(notdir $(SERVICE_FILES)), systemctl start $(file:.container=);)
-
-test: $(IMAGE_FILE) setup ## Launch virtual machine with Qemu
+test: $(COMBUSTION_FILE) $(IMAGE_FILE)  ## Launch virtual machine with Qemu
 	qemu-system-aarch64 \
 				-machine virt \
 				-cpu cortex-a72 \
@@ -75,11 +70,8 @@ test: $(IMAGE_FILE) setup ## Launch virtual machine with Qemu
 				-netdev user,id=net0,hostfwd=tcp::2222-:22,hostfwd=tcp::80-:80 \
 				-device virtio-net-pci,netdev=net0 \
 				-fsdev local,id=fsdev0,path=.,security_model=none \
-				-device virtio-9p-pci,fsdev=fsdev0,mount_tag=hostshare \
-				-fw_cfg name=opt/org.opensuse.combustion/script,file=combustion/script \
-				-fw_cfg name=opt/org.opensuse.combustion/wifi.conf,file=combustion/wifi.conf \
-				-fw_cfg name=opt/org.opensuse.combustion/user.conf,file=combustion/user.conf
+				-drive file=$(COMBUSTION_FILE),format=raw,if=virtio
 
 
 clean: ## Clean up temp files.
-	@rm -f $(IMAGE_FILE) combustion/*.conf
+	@rm -f $(IMAGE_FILE) $(COMBUSTION_FILE) combustion/*.conf
