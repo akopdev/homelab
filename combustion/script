@@ -1,0 +1,33 @@
+#!/bin/bash
+# combustion: network
+
+set -euo pipefail
+
+source wifi.conf
+source user.conf
+
+exec > >(exec tee -a /dev/tty0) 2>&1
+
+# # Setup WiFi
+cat >/etc/sysconfig/network/ifcfg-wlan0 <<EOF
+BOOTPROTO='dhcp'
+STARTMODE='auto'
+WIRELESS_ESSID='${WIFI_SSID}'
+WIRELESS_AUTH_MODE='psk'
+WIRELESS_WPA_PSK='${WIFI_PASS}'
+EOF
+
+# Create user
+useradd -m -s /bin/bash "${USERNAME}" -p "${PASSWORD_HASH}"
+
+# Install dependencies and check for success
+zypper --non-interactive pkg install make git
+
+# Enable and start the SSH service
+systemctl enable sshd.service
+
+# Remove configuration files
+rm -f wifi.conf user.conf
+
+# Reboot after changes
+systemctl reboot

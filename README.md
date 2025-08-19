@@ -22,8 +22,12 @@ hostshare   /etc/homelab   9p   trans=virtio,version=9p2000.L   0   0
 
 ## Troubleshooting
 
+### Disable SELinux
 If your services are failing because of permission denied err, try to disable SELinux 
 by run `setenforce 0`.
+
+### Debug combustion
+Access combustion logs: `journalctl -u combustion --no-pager`
 
 ## Path to container volumes
 
