@@ -75,6 +75,7 @@ test: $(COMBUSTION_FILE) $(IMAGE_FILE)  ## Launch virtual machine with Qemu
 				-netdev user,id=net0,hostfwd=tcp::2222-:22,hostfwd=tcp::80-:80 \
 				-device virtio-net-pci,netdev=net0 \
 				-fsdev local,id=fsdev0,path=.,security_model=none \
+				-device virtio-9p-pci,fsdev=fsdev0,mount_tag=homelab \
 				-drive file=$(COMBUSTION_FILE),format=raw,if=virtio
 
 

@@ -10,8 +10,8 @@ make start
 
 ```sh
 # Inside MicroOS (as root):
-mkdir -p /etc/homelab
-mount -t 9p -o trans=virtio hostshare /etc/homelab
+mkdir -p ~/homelab
+mount -t 9p -o trans=virtio homelab ~/homelab
 ```
 
 to make it persistent add to `/etc/fstab`
