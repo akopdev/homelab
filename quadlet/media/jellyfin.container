@@ -1,0 +1,15 @@
+[Container]
+Image=docker.io/jellyfin/jellyfin:latest
+AutoUpdate=registry
+ContainerName=jellyfin
+Network=homelab.network
+Volume=jellyfin-config:/config:Z
+Volume=jellyfin-cache:/cache:Z
+Volume=jellyfin-media:/media:Z
+
+[Service]
+# Inform systemd of additional exit status
+SuccessExitStatus=0 143
+
+[Install]
+WantedBy=multi-user.target

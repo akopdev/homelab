@@ -1,6 +1,6 @@
 [Unit]
-After=forgejo.container
-Requires=forgejo.container
+After=forgejo.container jellyfin.container
+Requires=forgejo.container jellyfin.container
 
 [Container]
 Image=docker.io/library/nginx:latest
