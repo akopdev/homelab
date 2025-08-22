@@ -29,16 +29,19 @@ $(IMAGE_FILE):
 $(DST_DIR):
 	@mkdir -p $@
 
-combustion/user.conf: 
-	@echo "--- Setting up System user configuration ---"
+combustion/credentials.conf: 
+	@echo "--- Setting up system credentials ---"
 	@read -p "Enter username: " username; \
-	read -s -p "Enter password for new user: " user_pass; echo;\
+	read -s -p "Enter password for $$username: " user_pass; echo;\
+	read -s -p "Enter root password: " root_pass; echo; \
 	user_pass_hash=`openssl passwd -1 "$$user_pass"`; \
-	echo "USERNAME='$$username'" > combustion/user.conf; \
-	echo "PASSWORD_HASH='$$user_pass_hash'" >> combustion/user.conf
-	@echo "User configuration file created: combustion/user.conf"
+	root_pass_hash=`openssl passwd -1 "$$root_pass"`; \
+	echo "USERNAME='$$username'" > $@; \
+	echo "PASSWORD_HASH='$$user_pass_hash'" >> $@; \
+	echo "ROOT_PASSWORD_HASH='$$root_pass_hash'" >> $@
+	@echo "Credentials file created: $@"
 
-$(COMBUSTION_FILE): combustion/user.conf
+$(COMBUSTION_FILE): combustion/credentials.conf
 	@dd if=/dev/zero of=$@ bs=1m count=4
 	@mkfs.vfat -n COMBUSTION $@
 	@mcopy -i $@ -s combustion ::

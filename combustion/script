@@ -3,9 +3,12 @@
 
 set -euo pipefail
 
-source ./user.conf
+source ./credentials.conf
 
 exec > >(exec tee -a /dev/tty0) 2>&1
+
+# Set root password
+echo "root:${ROOT_PASSWORD_HASH}" | chpasswd -e
 
 # Create user and add to wheel
 groupadd -r wheel

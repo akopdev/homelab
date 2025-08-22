@@ -16,4 +16,4 @@ Volume=/etc/homelab/quadlet/services/reverse-proxy/nginx.conf:/etc/nginx/conf.d/
 SuccessExitStatus=0 143
 
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target
