@@ -63,6 +63,7 @@ install: secrets $(DST_DIR) ## Install all services.
 	@ln -sfn $(QUADLET_DIR) $(DST_DIR)
 	@systemctl --user daemon-reload
 	@$(foreach file, $(notdir $(QUADLET_FILES)), systemctl start --user $(file:.container=);)
+	@loginctl enable-linger $(USER)
 
 test: $(COMBUSTION_FILE) $(IMAGE_FILE)  ## Launch virtual machine with Qemu
 	qemu-system-aarch64 \
