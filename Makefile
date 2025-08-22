@@ -11,13 +11,14 @@
 # Change this variable if you're on a different system.
 QEMU_BIOS_PATH ?= /opt/homebrew/share/qemu/edk2-aarch64-code.fd
 
-# MicroOS image file.
+# Path to MicroOS and combustion images for test environment.
 IMAGE_FILE := openSUSE-MicroOS.aarch64-ContainerHost-kvm-and-xen.qcow2
 COMBUSTION_FILE := combustion.img
 
-# Path to podman quadlet files
+# Path to quadlet files
 DST_DIR       := $(HOME)/.config/containers/systemd
 QUADLET_DIR 	:= $(dir $(abspath $(lastword $(MAKEFILE_LIST))))/quadlet
+QUADLET_FILES := $(shell find $(QUADLET_DIR) -type f -name "*.container")
 
 # ====================
 # Targets
@@ -61,6 +62,7 @@ secrets: secrets.env
 install: secrets $(DST_DIR) ## Install all services.
 	@ln -sfn $(QUADLET_DIR) $(DST_DIR)
 	@systemctl --user daemon-reload
+	@$(foreach file, $(notdir $(QUADLET_FILES)), systemctl start --user $(file:.container=);)
 
 test: $(COMBUSTION_FILE) $(IMAGE_FILE)  ## Launch virtual machine with Qemu
 	qemu-system-aarch64 \

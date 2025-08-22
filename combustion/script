@@ -1,10 +1,11 @@
 #!/bin/bash
 # combustion: network
-
 set -euo pipefail
 
+# Should be generated with `make setup`
 source ./credentials.conf
 
+# Redirect output to the console
 exec > >(exec tee -a /dev/tty0) 2>&1
 
 # Set root password
