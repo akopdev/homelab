@@ -11,6 +11,12 @@ exec > >(exec tee -a /dev/tty0) 2>&1
 # Set root password
 echo "root:${ROOT_PASSWORD_HASH}" | chpasswd -e
 
+# Allow rootless users to bind any port (0–65535)
+echo 'net.ipv4.ip_unprivileged_port_start=0' > /etc/sysctl.d/99-unprivileged-ports.conf
+
+# Apply immediately
+/sbin/sysctl -p /etc/sysctl.d/99-unprivileged-ports.conf
+
 # Create user and add to wheel
 groupadd -r wheel
 mount /home

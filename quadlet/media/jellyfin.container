@@ -1,3 +1,7 @@
+[Unit]
+After=samba.container
+Requires=samba.container
+
 [Container]
 Image=docker.io/jellyfin/jellyfin:latest
 AutoUpdate=registry

@@ -1,0 +1,15 @@
+[Container]
+Image=docker.io/dockurr/samba:latest
+AutoUpdate=registry
+ContainerName=samba
+Network=homelab.network
+Volume=jellyfin-media:/samba:Z
+Environment=NAME=Media
+Secret=SAMBA_USER,type=env,target=USER
+Secret=SAMBA_PASSWORD,type=env,target=PASS
+
+[Service]
+SuccessExitStatus=0 126
+
+[Install]
+WantedBy=multi-user.target
