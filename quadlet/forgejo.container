@@ -18,4 +18,4 @@ Secret=DATABASE_PASSWORD,type=env,target=FORGEJO__database__PASSWD
 Secret=FORGEJO_SECRET_KEY,type=env,target=FORGEJO__database__SECRET_KEY
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target

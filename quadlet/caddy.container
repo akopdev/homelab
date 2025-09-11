@@ -6,9 +6,5 @@ ContainerName=caddy
 PublishPort=80:80/tcp
 Volume=%h/homelab/config/Caddyfile:/etc/caddy/Caddyfile:ro
 
-[Service]
-# Inform systemd of additional exit status
-SuccessExitStatus=0 143
-
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target

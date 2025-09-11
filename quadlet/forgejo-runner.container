@@ -13,4 +13,4 @@ Secret=FORGEJO_RUNNER_REGISTRATION_TOKEN,type=env,target=GITEA_RUNNER_REGISTRATI
 
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target

@@ -3,7 +3,7 @@ Homelab notes
 ## Start virtual machine
 
 ```
-make start
+make test
 ```
 
 ## Mounting host folder
