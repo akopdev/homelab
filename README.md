@@ -17,7 +17,7 @@ mount -t 9p -o trans=virtio homelab ~/homelab
 to make it persistent add to `/etc/fstab`
 
 ```txt
-hostshare   /etc/homelab   9p   trans=virtio,version=9p2000.L   0   0
+hostshare   /home/akop/homelab   9p   trans=virtio,version=9p2000.L   0   0
 ```
 
 ## Troubleshooting
