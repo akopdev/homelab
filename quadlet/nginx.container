@@ -8,8 +8,7 @@ AutoUpdate=registry
 Network=homelab.network
 ContainerName=nginx
 PublishPort=80:80/tcp
-PublishPort=445:445/tcp
-Volume=%h/homelab/quadlet/reverse-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+Volume=%h/homelab/config/nginx.conf:/etc/nginx/nginx.conf:ro
 
 [Service]
 # Inform systemd of additional exit status

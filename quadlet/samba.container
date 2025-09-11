@@ -3,6 +3,7 @@ Image=docker.io/dockurr/samba:latest
 AutoUpdate=registry
 ContainerName=samba
 Network=homelab.network
+PublishPort=445:445/tcp
 Volume=jellyfin-media:/samba:Z
 Environment=NAME=Media
 Secret=SAMBA_USER,type=env,target=USER

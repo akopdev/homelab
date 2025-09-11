@@ -1,0 +1,16 @@
+{
+	auto_https disable_redirects
+}
+
+http://git.homelab.local {
+	reverse_proxy forgejo:3000 
+}
+
+http://media.homelab.local {
+	reverse_proxy jellyfin:8096 {
+		transport http {
+			read_timeout 3600s
+			write_timeout 3600s
+		}
+	}
+}
