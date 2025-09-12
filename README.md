@@ -11,7 +11,7 @@ make test
 ```sh
 # Inside MicroOS (as root):
 mkdir -p ~/homelab
-mount -t 9p -o trans=virtio homelab ~/homelab
+sudo mount -t 9p -o trans=virtio homelab ~/homelab
 ```
 
 to make it persistent add to `/etc/fstab`
@@ -31,4 +31,4 @@ Access combustion logs: `journalctl -u combustion --no-pager`
 
 ## Path to container volumes
 
-- /var/lib/containers/storage/volumes/
+- /home/<user>/.local/share/containers/storage/volumes/

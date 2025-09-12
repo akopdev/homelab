@@ -3,7 +3,7 @@
 # ====================
 
 .EXPORT_ALL_VARIABLES:
-.PHONY: clean help start setup
+.PHONY: clean install start stop test update secrets fetch
 .DEFAULT_GOAL: help
 
 # The path to the aarch64 UEFI firmware.
@@ -59,13 +59,23 @@ secrets: secrets.env
 		fi \
 	done < $<
 
-install: secrets $(DST_DIR) ## Install all services.
+fetch: $(DST_DIR)
+	@git pull
 	@ln -sfn $(QUADLET_DIR) $(DST_DIR)
+
+start: secrets ## Start all services.
 	@systemctl --user daemon-reload
 	@$(foreach file, $(notdir $(QUADLET_FILES)), systemctl restart --user $(file:.container=);)
 	@loginctl enable-linger $(USER)
 
-test: $(COMBUSTION_FILE) $(IMAGE_FILE)  ## Launch virtual machine with Qemu
+stop: ## Stop all services.
+	@$(foreach file, $(notdir $(QUADLET_FILES)), systemctl stop --user $(file:.container=) 2>/dev/null || true;)
+
+install: fetch start ## Install all services.
+
+update: stop fetch start ## Update local services from remote source.
+
+test: $(COMBUSTION_FILE) $(IMAGE_FILE)  ## Spin up local test environment using qemu.
 	qemu-system-aarch64 \
 				-machine virt \
 				-cpu cortex-a72 \
