@@ -3,7 +3,7 @@ After=forgejo.container
 Requires=forgejo.container
 
 [Container]
-Image=docker.io/gitea/act_runner:latest
+Image=code.forgejo.org/forgejo/runner:11
 AutoUpdate=registry
 Network=homelab.network
 ContainerName=forgejo-runner

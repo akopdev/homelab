@@ -1,5 +1,5 @@
 [Container]
-Image=docker.io/library/caddy:latest
+Image=docker.io/library/caddy:2.10-alpine
 AutoUpdate=registry
 Network=homelab.network
 ContainerName=caddy

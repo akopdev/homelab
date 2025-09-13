@@ -3,7 +3,7 @@ After=samba.container
 Requires=samba.container
 
 [Container]
-Image=docker.io/jellyfin/jellyfin:latest
+Image=docker.io/jellyfin/jellyfin:2025090805
 AutoUpdate=registry
 ContainerName=jellyfin
 Network=homelab.network

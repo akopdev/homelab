@@ -1,5 +1,5 @@
 [Container]
-Image=docker.io/dockurr/samba:latest
+Image=docker.io/dockurr/samba:4.21
 AutoUpdate=registry
 ContainerName=samba
 Network=homelab.network
