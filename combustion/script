@@ -25,7 +25,7 @@ mkdir -pm700 /home/core/.ssh/
 umount /home
 
 # Install dependencies and check for success
-zypper --non-interactive install make git
+zypper --non-interactive install make git gnupg2
 
 # Enable and start the SSH service
 systemctl enable sshd.service

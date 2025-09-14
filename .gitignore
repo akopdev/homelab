@@ -1,4 +1,6 @@
 *.qcow2
 *.img
 *.dmg
+*.asc
 combustion/*.conf
+backup/

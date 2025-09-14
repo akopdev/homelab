@@ -3,15 +3,15 @@
 # ====================
 
 .EXPORT_ALL_VARIABLES:
-.PHONY: clean install start stop test update secrets fetch
+.PHONY: clean install start stop test update secrets fetch backup
 .DEFAULT_GOAL: help
 
 # The path to the aarch64 UEFI firmware.
-# This path is specific to macOS using Homebrew.
+# This path is specific to MacOS with, Qemu installed with  Homebrew.
 # Change this variable if you're on a different system.
 QEMU_BIOS_PATH ?= /opt/homebrew/share/qemu/edk2-aarch64-code.fd
 
-# Path to MicroOS and combustion images for test environment.
+# Path to system images.
 IMAGE_FILE := openSUSE-MicroOS.aarch64-ContainerHost-kvm-and-xen.qcow2
 COMBUSTION_FILE := combustion.img
 
@@ -19,6 +19,10 @@ COMBUSTION_FILE := combustion.img
 DST_DIR       := $(HOME)/.config/containers/systemd
 QUADLET_DIR 	:= $(dir $(abspath $(lastword $(MAKEFILE_LIST))))/quadlet
 QUADLET_FILES := $(shell find $(QUADLET_DIR) -type f -name "*.container")
+
+# Backup 
+BACKUP_DIR    := $(PWD)/backup
+GPG_USER_ID   := backup@homelab.local
 
 # ====================
 # Targets
@@ -28,6 +32,9 @@ $(IMAGE_FILE):
 	@if [ ! -f "$(IMAGE_FILE)" ]; then curl -L -o $@ https://download.opensuse.org/ports/aarch64/tumbleweed/appliances/$(IMAGE_FILE); fi
 
 $(DST_DIR):
+	@mkdir -p $@
+
+$(BACKUP_DIR):
 	@mkdir -p $@
 
 combustion/credentials.conf: 
@@ -89,6 +96,17 @@ test: $(COMBUSTION_FILE) $(IMAGE_FILE)  ## Spin up local test environment using 
 				-device virtio-9p-pci,fsdev=fsdev0,mount_tag=homelab \
 				-drive file=$(COMBUSTION_FILE),format=raw,if=virtio
 
+backup: $(BACKUP_DIR) ## Backup container volumes.
+	@echo "[ INFO ] Started container volumes backup"
+	@for volume in $$(podman volume ls --quiet); do \
+		TIMESTAMP=$$(date +%Y%m%d-%H%M%S); \
+		podman volume export $$volume | gpg --encrypt --recipient $(GPG_USER_ID) --output "$(BACKUP_DIR)/$$TIMESTAMP-$$volume.tar.gpg" 2>/dev/null; \
+		if [ $$? -eq 0 ]; then \
+			echo -e "\r[  OK  ] Exported volume $$volume"; \
+		else \
+			echo -e "\r[FAILED] Failed to export volume $$volume"; \
+		fi \
+	done
 
 clean: ## Clean up temp files.
 	@rm -f $(IMAGE_FILE) $(COMBUSTION_FILE) combustion/*.conf
