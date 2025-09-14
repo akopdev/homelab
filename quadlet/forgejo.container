@@ -5,11 +5,15 @@ ContainerName=forgejo
 Network=homelab.network
 Volume=forgejo-data:/var/lib/gitea/data:Z
 Volume=forgejo-git:/var/lib/gitea/git:Z
+Environment=FORGEJO__server__DOMAIN=git.homelab.local
 Environment=FORGEJO__database__DB_TYPE=sqlite3
 Environment=FORGEJO__security__INSTALL_LOCK=true 
 Secret=DATABASE_USER,type=env,target=FORGEJO__database__USER
 Secret=DATABASE_PASSWORD,type=env,target=FORGEJO__database__PASSWD
 Secret=FORGEJO_SECRET_KEY,type=env,target=FORGEJO__database__SECRET_KEY
+
+[Service]
+Restart=always
 
 [Install]
 WantedBy=default.target

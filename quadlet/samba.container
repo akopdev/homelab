@@ -11,6 +11,7 @@ Secret=SAMBA_PASSWORD,type=env,target=PASS
 
 [Service]
 SuccessExitStatus=0 126
+Restart=always
 
 [Install]
 WantedBy=multi-user.target

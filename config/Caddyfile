@@ -6,6 +6,10 @@ http://git.homelab.local {
 	reverse_proxy forgejo:3000 
 }
 
+http://books.homelab.local {
+	reverse_proxy audiobookshelf:80
+}
+
 http://media.homelab.local {
 	reverse_proxy jellyfin:8096 {
 		transport http {

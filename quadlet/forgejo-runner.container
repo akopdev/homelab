@@ -11,6 +11,8 @@ Volume=runner-data:/data:Z
 Environment=GITEA_INSTANCE_URL=http://forgejo:3000/
 Secret=FORGEJO_RUNNER_REGISTRATION_TOKEN,type=env,target=GITEA_RUNNER_REGISTRATION_TOKEN
 
+[Service]
+Restart=always
 
 [Install]
 WantedBy=default.target

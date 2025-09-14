@@ -6,5 +6,8 @@ ContainerName=caddy
 PublishPort=80:80/tcp
 Volume=%h/homelab/config/Caddyfile:/etc/caddy/Caddyfile:ro
 
+[Service]
+Restart=always
+
 [Install]
 WantedBy=default.target
