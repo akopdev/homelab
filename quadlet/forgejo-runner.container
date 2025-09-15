@@ -1,15 +1,16 @@
 [Unit]
-After=forgejo.container
-Requires=forgejo.container
+After=forgejo.container forgejo-dind.container
+Requires=forgejo.container forgejo-dind.container
 
 [Container]
 Image=code.forgejo.org/forgejo/runner:11
 AutoUpdate=registry
 Network=homelab.network
 ContainerName=forgejo-runner
-Volume=runner-data:/data:Z
-Environment=GITEA_INSTANCE_URL=http://forgejo:3000/
-Secret=FORGEJO_RUNNER_REGISTRATION_TOKEN,type=env,target=GITEA_RUNNER_REGISTRATION_TOKEN
+Volume=%h/homelab/config/forgejo-runner:/data/.runner:Z
+Environment=DOCKER_HOST=tcp://forgejo-dind:2375
+Exec=forgejo-runner daemon
+
 
 [Service]
 Restart=always

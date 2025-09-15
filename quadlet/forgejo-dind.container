@@ -1,0 +1,19 @@
+[Unit]
+After=forgejo.container podman.socket
+Requires=forgejo.container podman.socket
+
+[Container]
+Image=code.forgejo.org/oci/docker:dind
+AutoUpdate=registry
+Network=homelab.network
+ContainerName=forgejo-dind
+PodmanArgs=--privileged
+Environment=DOCKER_HOST=unix:/run/user/%U/podman/podman.sock
+Exec=dockerd -H tcp://0.0.0.0:2375 --tls=false
+
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
