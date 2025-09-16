@@ -8,7 +8,8 @@ AutoUpdate=registry
 Network=homelab.network
 ContainerName=forgejo-dind
 PodmanArgs=--privileged
-Environment=DOCKER_HOST=unix:/run/user/%U/podman/podman.sock
+Environment=DOCKER_HOST=unix:///var/run/docker.sock
+Volume=/run/user/%U/podman/podman.sock:/var/run/docker.sock
 Exec=dockerd -H tcp://0.0.0.0:2375 --tls=false
 
 
