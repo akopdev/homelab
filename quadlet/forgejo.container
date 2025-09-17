@@ -9,6 +9,7 @@ Environment=FORGEJO__server__ROOT_URL=http://git.homelab.local/
 Environment=FORGEJO__database__DB_TYPE=sqlite3
 Environment=FORGEJO__security__INSTALL_LOCK=true 
 Secret=FORGEJO_SECRET_KEY,type=env,target=FORGEJO__security__SECRET_KEY
+Secret=FORGEJO_RUNNER_SECRET,type=env,target=FORGEJO_RUNNER_SECRET
 
 [Service]
 Restart=always

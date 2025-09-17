@@ -7,10 +7,11 @@ Image=code.forgejo.org/forgejo/runner:11
 AutoUpdate=registry
 Network=homelab.network
 ContainerName=forgejo-runner
-Volume=%h/homelab/config/forgejo-runner:/data/.runner:Z
 Environment=DOCKER_HOST=tcp://forgejo-dind:2375
-Exec=forgejo-runner daemon
-
+Environment=FORGEJO_INSTANCE_URL=http://forgejo:3000
+Secret=FORGEJO_RUNNER_SECRET,type=env,target=FORGEJO_RUNNER_SECRET
+Volume=%h/homelab/config/forgejo-runner.sh:/data/forgejo-runner.sh:ro
+Entrypoint=/data/forgejo-runner.sh
 
 [Service]
 Restart=always
