@@ -5,11 +5,19 @@ ContainerName=forgejo
 Network=homelab.network
 Volume=forgejo-data:/var/lib/gitea/data:Z
 Volume=forgejo-git:/var/lib/gitea/git:Z
+Volume=%h/homelab/config/forgejo.sh:/usr/local/bin/forgejo.sh:ro
 Environment=FORGEJO__server__ROOT_URL=http://git.homelab.local/
 Environment=FORGEJO__database__DB_TYPE=sqlite3
 Environment=FORGEJO__security__INSTALL_LOCK=true 
 Secret=FORGEJO_SECRET_KEY,type=env,target=FORGEJO__security__SECRET_KEY
 Secret=FORGEJO_RUNNER_SECRET,type=env,target=FORGEJO_RUNNER_SECRET
+Entrypoint=/usr/local/bin/forgejo.sh
+HealthCmd=[[ "$(curl --silent --insecure --output /dev/null --write-out "%{http_code}" http://127.0.0.1:3000/api/healthz)" == '200' ]]
+HealthInterval=15s
+HealthTimeout=1s
+HealthRetries=3
+HealthOnFailure=kill
+Notify=healthy
 
 [Service]
 Restart=always

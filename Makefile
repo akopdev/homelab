@@ -3,7 +3,6 @@
 # ====================
 
 .EXPORT_ALL_VARIABLES:
-.PHONY: clean install start stop test update secrets fetch backup
 .DEFAULT_GOAL: help
 
 # The path to the aarch64 UEFI firmware.
@@ -57,6 +56,7 @@ $(COMBUSTION_FILE): combustion/credentials.conf
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-16s\033[0m %s\n", $$1, $$2}'
 
+.PHONY: secrets
 secrets: secrets.env
 	@while read -r line; do \
 		if [[ "$$line" =~ ^[^#].*=.* ]]; then \
@@ -66,22 +66,28 @@ secrets: secrets.env
 		fi \
 	done < $<
 
+.PHONY: fetch
 fetch: $(DST_DIR)
 	@git pull
 	@ln -sfn $(QUADLET_DIR) $(DST_DIR)
 
+.PHONY: start
 start: secrets ## Start all services.
 	@systemctl --user daemon-reload
 	@$(foreach file, $(notdir $(QUADLET_FILES)), systemctl restart --user $(file:.container=);)
 	@loginctl enable-linger $(USER)
 
+.PHONY: stop
 stop: ## Stop all services.
 	@$(foreach file, $(notdir $(QUADLET_FILES)), systemctl stop --user $(file:.container=) 2>/dev/null || true;)
 
+.PHONY: install
 install: fetch start ## Install all services.
 
+.PHONY: update
 update: stop fetch start ## Update local services from remote source.
 
+.PHONY: test
 test: $(COMBUSTION_FILE) $(IMAGE_FILE)  ## Spin up local test environment using qemu.
 	qemu-system-aarch64 \
 				-machine virt \
@@ -96,6 +102,7 @@ test: $(COMBUSTION_FILE) $(IMAGE_FILE)  ## Spin up local test environment using 
 				-device virtio-9p-pci,fsdev=fsdev0,mount_tag=homelab \
 				-drive file=$(COMBUSTION_FILE),format=raw,if=virtio
 
+.PHONY: backup
 backup: $(BACKUP_DIR) ## Backup container volumes.
 	@echo "[ INFO ] Started container volumes backup"
 	@for volume in $$(podman volume ls --quiet); do \
@@ -108,5 +115,6 @@ backup: $(BACKUP_DIR) ## Backup container volumes.
 		fi \
 	done
 
+.PHONY: clean
 clean: ## Clean up temp files.
 	@rm -f $(IMAGE_FILE) $(COMBUSTION_FILE) combustion/*.conf
